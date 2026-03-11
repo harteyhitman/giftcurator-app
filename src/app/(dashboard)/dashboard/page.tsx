@@ -5,6 +5,7 @@ import KeyMetrics from '@/components/dashboard/KeyMetrics';
 import QuickActions from '@/components/dashboard/QuickActions';
 import UpcomingEvents from '@/components/dashboard/UpcomingEvents';
 import RecentActivity from '@/components/dashboard/RecentActivity';
+import GiftingInsights from '@/components/dashboard/GiftingInsights';
 
 export default function DashboardPage() {
   return (
@@ -29,6 +30,10 @@ export default function DashboardPage() {
         <div className="space-y-8">
           <section className="bg-card rounded-3xl p-6 border border-primary/10 shadow-sm">
             <RecentActivity />
+          </section>
+          
+          <section>
+            <GiftingInsights />
           </section>
         </div>
       </div>

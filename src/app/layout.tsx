@@ -7,9 +7,6 @@ import OfflineIndicator from '@/components/shared/OfflineIndicator';
 import { Toaster } from 'sonner';
 import Providers from "@/lib/providers";
 import "./globals.css";
-import { mswServer } from "@/lib/msw";
-
-mswServer();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +22,6 @@ export const metadata: Metadata = {
   title: "Gifting App",
   description: "A simple app to manage your gifting.",
   manifest: "/manifest.json",
-  themeColor: "#000000",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -41,6 +37,10 @@ export const metadata: Metadata = {
       },
     ],
   },
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 import { ThemeProvider } from '@/components/shared/ThemeProvider';
