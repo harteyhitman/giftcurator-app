@@ -6,9 +6,13 @@ export default function Welcome() {
   const { data: session } = useSession();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Welcome, {session?.user?.name}!</h1>
-      <p className="text-muted-foreground">Here is your dashboard overview.</p>
+    <div className="space-y-1">
+      <h1 className="text-3xl font-black tracking-tight text-foreground">
+        Welcome back, <span className="text-primary">{session?.user?.name || 'Curator'}</span>! ✨
+      </h1>
+      <p className="text-muted-foreground font-medium text-lg">
+        Ready to make someone's day special?
+      </p>
     </div>
   );
 }

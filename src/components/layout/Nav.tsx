@@ -6,13 +6,12 @@ import { Home, Users, Calendar, BarChart, CreditCard, Package, MessageCircle, Se
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', icon: Home, label: 'Dashboard' },
+  { href: '/dashboard', icon: Home, label: 'Dashboard' },
   { href: '/beneficiaries', icon: Users, label: 'Beneficiaries' },
   { href: '/events', icon: Calendar, label: 'Events' },
   { href: '/reports', icon: BarChart, label: 'Reports' },
-  { href: '/cards', icon: CreditCard, label: 'Cards' },
-  { href: '/subscription', icon: Package, label: 'Subscription' },
-  { href: '/contact', icon: MessageCircle, label: 'Contact' },
+  { href: '/subscriptions', icon: Package, label: 'Subscriptions' },
+  { href: '/support', icon: MessageCircle, label: 'Support' },
   { href: '/settings', icon: Settings, label: 'Settings' },
 ];
 
@@ -26,10 +25,10 @@ export default function Nav() {
           key={item.href}
           href={item.href}
           className={cn(
-            'flex items-center px-4 py-2 text-sm font-medium rounded-md',
+            'flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200',
             pathname === item.href
-              ? 'bg-primary text-primary-foreground'
-              : 'hover:bg-accent hover:text-accent-foreground'
+              ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]'
+              : 'text-muted-foreground hover:bg-primary/5 hover:text-primary'
           )}
         >
           <item.icon className="w-5 h-5 mr-3" />

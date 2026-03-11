@@ -12,9 +12,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Header />
         <div className="flex flex-1">
           <Sidebar />
-          <main className="flex-1 p-4 sm:ml-60">
-            <Breadcrumbs />
-            <ErrorBoundary>{children}</ErrorBoundary>
+          <main className="flex-1 p-6 sm:ml-64 transition-all duration-300">
+            <div className="max-w-7xl mx-auto">
+              <Breadcrumbs />
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </div>
           </main>
         </div>
         <Footer />
