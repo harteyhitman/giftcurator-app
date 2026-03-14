@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Pie, PieChart, ResponsiveContainer, Cell, Tooltip, Legend } from 'recharts';
+import { Badge } from '@/components/ui/badge';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -15,6 +15,19 @@ export default function GiftingInsights() {
   if (error) return <div className="p-4 text-red-500">Failed to load insights</div>;
   if (!data) return <Skeleton className="h-80 w-full rounded-3xl" />;
 
+  const total = data.reduce((sum: number, item: { value: number }) => sum + item.value, 0);
+  let currentAngle = 0;
+  const gradient = total
+    ? `conic-gradient(${data
+        .map((item: { value: number }, index: number) => {
+          const angle = (item.value / total) * 360;
+          const segment = `${COLORS[index % COLORS.length]} ${currentAngle}deg ${currentAngle + angle}deg`;
+          currentAngle += angle;
+          return segment;
+        })
+        .join(', ')})`
+    : 'conic-gradient(#e5e7eb 0deg 360deg)';
+
   return (
     <Card className="rounded-3xl border-primary/5 shadow-sm overflow-hidden">
       <CardHeader className="pb-2">
@@ -22,32 +35,53 @@ export default function GiftingInsights() {
         <p className="text-sm text-muted-foreground font-medium">Monthly distribution of activities</p>
       </CardHeader>
       <CardContent>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {data.map((entry: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ 
-                  borderRadius: '1rem', 
-                  border: 'none', 
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' 
-                }} 
-              />
-              <Legend verticalAlign="bottom" height={36} />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="grid gap-8 lg:grid-cols-[18rem_1fr] lg:items-center">
+          <div className="flex justify-center">
+            <div
+              className="relative flex h-72 w-72 items-center justify-center rounded-full"
+              style={{ background: gradient }}
+            >
+              <div className="flex h-44 w-44 flex-col items-center justify-center rounded-full bg-background shadow-inner">
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                  Total
+                </span>
+                <span className="text-4xl font-black text-foreground">{total}</span>
+                <span className="text-sm text-muted-foreground">tracked activities</span>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-4">
+            {data.map((item: { name: string; value: number }, index: number) => {
+              const percentage = total ? Math.round((item.value / total) * 100) : 0;
+
+              return (
+                <div key={item.name} className="rounded-2xl border border-primary/10 p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="h-3 w-3 rounded-full"
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      />
+                      <p className="font-semibold">{item.name}</p>
+                    </div>
+                    <Badge variant="secondary" className="rounded-full px-3 py-1">
+                      {percentage}%
+                    </Badge>
+                  </div>
+                  <div className="mb-2 h-2 overflow-hidden rounded-full bg-primary/10">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${percentage}%`,
+                        backgroundColor: COLORS[index % COLORS.length],
+                      }}
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.value} activities recorded</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </CardContent>
     </Card>

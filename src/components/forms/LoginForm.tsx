@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sanitize } from '@/lib/utils';
@@ -22,6 +23,7 @@ import {
 
 export default function LoginForm() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<LoginData>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -31,8 +33,9 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginData) => {
+    setIsSubmitting(true);
     const result = await signIn('credentials', {
-      username: sanitize(data.email),
+      email: sanitize(data.email).toLowerCase(),
       password: sanitize(data.password),
       redirect: false,
     });
@@ -43,6 +46,8 @@ export default function LoginForm() {
       toast.success('Login successful!');
       router.push('/dashboard');
     }
+
+    setIsSubmitting(false);
   };
 
   const handleSocialSignIn = (provider: string) => {
@@ -112,8 +117,8 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
-              Sign In
+            <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
+              {isSubmitting ? 'Signing you in...' : 'Sign In'}
             </Button>
           </form>
         </Form>

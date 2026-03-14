@@ -1,14 +1,10 @@
 import { z } from 'zod';
 
 export const eventSchema = z.object({
-  eventName: z.string().min(1, 'Event name is required'),
-  eventDate: z.date(),
-  eventFrequency: z.string(),
-  eventType: z.string(),
-  beneficiary: z.string(),
-  maxAmount: z.number().positive(),
-  specialMessage: z.string(),
-  buyCard: z.boolean(),
-  giftType: z.string(),
-  personalizeGift: z.boolean(),
+  title: z.string().min(2, 'Event title is required'),
+  date: z.date({
+    message: 'Event date is required',
+  }),
+  type: z.string().min(1, 'Event type is required'),
+  beneficiaryId: z.string().min(1, 'Select a beneficiary'),
 });

@@ -1,7 +1,9 @@
 import { useFormContext } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/datepicker';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CalendarHeart } from 'lucide-react';
 
 import { useAnalytics } from '@/hooks/useAnalytics';
 
@@ -15,36 +17,60 @@ export default function Step2({ nextStep, prevStep }: { nextStep: () => void; pr
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-secondary/10 bg-secondary/[0.06] p-4">
+        <div className="mb-2 flex items-center gap-3">
+          <div className="rounded-2xl bg-secondary/15 p-2 text-secondary">
+            <CalendarHeart className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-black">Set the relationship context</h2>
+            <p className="text-sm text-muted-foreground">
+              This helps the dashboard tailor upcoming event planning and quick reminders.
+            </p>
+          </div>
+        </div>
+      </div>
       <FormField
         control={control}
-        name="email"
+        name="relationship"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
+            <FormLabel>Relationship</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a relationship" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="Family">Family</SelectItem>
+                <SelectItem value="Friend">Friend</SelectItem>
+                <SelectItem value="Partner">Partner</SelectItem>
+                <SelectItem value="Colleague">Colleague</SelectItem>
+                <SelectItem value="Mentor">Mentor</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
       />
       <FormField
         control={control}
-        name="mobile"
+        name="dob"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Mobile Number</FormLabel>
+            <FormLabel>Date of Birth</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <DatePicker value={field.value} onChange={field.onChange} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t sm:static sm:p-0 sm:border-0 sm:flex sm:gap-4">
-        <Button variant="outline" onClick={prevStep} className="w-full mb-2 sm:w-auto sm:mb-0">Previous</Button>
-        <Button onClick={handleNext} className="w-full sm:w-auto">Next</Button>
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" onClick={prevStep} className="w-full mb-2 sm:w-auto sm:mb-0">Previous</Button>
+        <Button type="button" onClick={handleNext} className="w-full sm:w-auto">Next</Button>
       </div>
     </div>
   );

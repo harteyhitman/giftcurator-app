@@ -6,23 +6,34 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/ui/datepicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup } from '@/components/ui/radio-group';
-import RadioCard from '@/components/ui/radio-card';
-import { Repeat, Repeat1, Calendar, Gift, Briefcase, Heart, Home, TrendingUp, Baby } from 'lucide-react';
+import { CalendarDays, Gift, Heart, PartyPopper } from 'lucide-react';
 
 export default function EventStep1({ nextStep }: { nextStep: () => void }) {
   const { control } = useFormContext();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-4">
+        <div className="mb-2 flex items-center gap-3">
+          <div className="rounded-2xl bg-primary/10 p-2 text-primary">
+            <PartyPopper className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-black">Define the occasion</h2>
+            <p className="text-sm text-muted-foreground">
+              Give the event a clear title and date so it reads beautifully in the calendar.
+            </p>
+          </div>
+        </div>
+      </div>
       <FormField
         control={control}
-        name="eventName"
+        name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Event Name</FormLabel>
+            <FormLabel>Event Title</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} placeholder="Sophia's Birthday Dinner" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -30,7 +41,7 @@ export default function EventStep1({ nextStep }: { nextStep: () => void }) {
       />
       <FormField
         control={control}
-        name="eventDate"
+        name="date"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Event Date</FormLabel>
@@ -43,41 +54,7 @@ export default function EventStep1({ nextStep }: { nextStep: () => void }) {
       />
       <FormField
         control={control}
-        name="eventFrequency"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Event Frequency</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="grid grid-cols-4 gap-4"
-              >
-                <RadioCard value="one-off">
-                  <Repeat1 className="w-8 h-8" />
-                  <span className="mt-2">One-Off</span>
-                </RadioCard>
-                <RadioCard value="weekly">
-                  <Repeat className="w-8 h-8" />
-                  <span className="mt-2">Weekly</span>
-                </RadioCard>
-                <RadioCard value="monthly">
-                  <Calendar className="w-8 h-8" />
-                  <span className="mt-2">Monthly</span>
-                </RadioCard>
-                <RadioCard value="yearly">
-                  <Calendar className="w-8 h-8" />
-                  <span className="mt-2">Yearly</span>
-                </RadioCard>
-              </RadioGroup>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="eventType"
+        name="type"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Event Type</FormLabel>
@@ -100,21 +77,9 @@ export default function EventStep1({ nextStep }: { nextStep: () => void }) {
                   <Heart className="w-4 h-4 mr-2" />
                   Anniversary
                 </SelectItem>
-                <SelectItem value="retirement">
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Retirement
-                </SelectItem>
-                <SelectItem value="house-warming">
-                  <Home className="w-4 h-4 mr-2" />
-                  House Warming
-                </SelectItem>
-                <SelectItem value="promotion">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Promotion
-                </SelectItem>
-                <SelectItem value="birth-delivery">
-                  <Baby className="w-4 h-4 mr-2" />
-                  Birth Delivery
+                <SelectItem value="graduation">
+                  <CalendarDays className="w-4 h-4 mr-2" />
+                  Graduation
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -122,7 +87,9 @@ export default function EventStep1({ nextStep }: { nextStep: () => void }) {
           </FormItem>
         )}
       />
-      <Button onClick={nextStep}>Next</Button>
+      <div className="flex justify-end">
+        <Button type="button" onClick={nextStep}>Next</Button>
+      </div>
     </div>
   );
 }

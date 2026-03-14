@@ -14,16 +14,10 @@ export const useEventFormStore = create<EventFormStore>()(
   persist(
     (set) => ({
       data: {
-        eventName: '',
-        eventFrequency: 'one-off',
-        buyCard: false,
-        personalizeGift: false,
-        eventDate: new Date(),
-        eventType: '',
-        beneficiary: '',
-        maxAmount: 0,
-        specialMessage: '',
-        giftType: '',
+        title: '',
+        date: new Date(),
+        type: '',
+        beneficiaryId: '',
       },
       setData: (data) => set({ data }),
     }),

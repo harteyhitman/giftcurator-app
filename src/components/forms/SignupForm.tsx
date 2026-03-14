@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sanitize } from '@/lib/utils';
@@ -12,6 +13,8 @@ import { toast } from 'sonner';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+import { apiFetch } from '@/lib/api';
 import {
   Form,
   FormControl,
@@ -23,6 +26,7 @@ import {
 
 export default function SignupForm() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<SignupData>({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
@@ -35,18 +39,40 @@ export default function SignupForm() {
   });
 
   const onSubmit = async (data: SignupData) => {
-    const sanitizedData = {
-      email: sanitize(data.email),
-      firstName: sanitize(data.firstName),
-      lastName: sanitize(data.lastName),
-      mobileNumber: sanitize(data.mobileNumber),
-      password: sanitize(data.password),
-    };
-    console.log('Registering user:', sanitizedData);
-    
-    // Simulate registration
-    toast.success('Account created successfully!');
-    router.push('/login');
+    try {
+      setIsSubmitting(true);
+
+      await apiFetch('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...data,
+          email: sanitize(data.email).toLowerCase(),
+          firstName: sanitize(data.firstName),
+          lastName: sanitize(data.lastName),
+          mobileNumber: sanitize(data.mobileNumber),
+          password: sanitize(data.password),
+        }),
+      });
+
+      const signInResult = await signIn('credentials', {
+        email: sanitize(data.email).toLowerCase(),
+        password: sanitize(data.password),
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        toast.success('Account created successfully. Please log in.');
+        router.push('/login');
+        return;
+      }
+
+      toast.success('Account created successfully!');
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast.error(error.message || 'Something went wrong');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSocialSignIn = (provider: string) => {
@@ -125,6 +151,19 @@ export default function SignupForm() {
             />
             <FormField
               control={form.control}
+              name="mobileNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">Phone Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="+1 234 567 890" {...field} className="h-12 rounded-xl border-primary/10 bg-background/50 focus:ring-primary/20" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -137,8 +176,8 @@ export default function SignupForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
-              Create Account
+            <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
+              {isSubmitting ? 'Creating your account...' : 'Create Account'}
             </Button>
           </form>
         </Form>

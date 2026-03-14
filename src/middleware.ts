@@ -4,6 +4,7 @@ import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
+  const pathname = request.nextUrl.pathname;
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
                      request.nextUrl.pathname.startsWith('/signup') ||
                      request.nextUrl.pathname.startsWith('/reset-password');
@@ -30,7 +31,10 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  if (request.nextUrl.pathname.startsWith('/api/auth')) {
+  const shouldRateLimitAuthApi =
+    pathname === '/api/auth/signin' || pathname.startsWith('/api/auth/callback');
+
+  if (shouldRateLimitAuthApi) {
     return await rateLimit({ request, response });
   }
   return response;

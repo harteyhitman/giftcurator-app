@@ -1,11 +1,17 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useNetworkState } from 'react-use';
 
 export default function OfflineIndicator() {
   const { online } = useNetworkState();
+  const [hasMounted, setHasMounted] = useState(false);
 
-  if (online) {
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || online !== false) {
     return null;
   }
 

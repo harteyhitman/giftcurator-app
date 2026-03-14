@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+import { getApiBaseUrl } from '@/lib/api';
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: getApiBaseUrl(),
 });
 
 // Request interceptor
