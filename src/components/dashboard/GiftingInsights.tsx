@@ -35,7 +35,7 @@ export default function GiftingInsights() {
         <p className="text-sm text-muted-foreground font-medium">Monthly distribution of activities</p>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-8 lg:grid-cols-[18rem_1fr] lg:items-center">
+        <div className="flex flex-col gap-8 lg:flex-cols-[18rem_1fr] lg:items-center">
           <div className="flex justify-center">
             <div
               className="relative flex h-72 w-72 items-center justify-center rounded-full"
