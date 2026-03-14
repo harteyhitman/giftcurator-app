@@ -1,47 +1,67 @@
-import { NextResponse } from 'next/server';
+import { differenceInCalendarDays, startOfDay } from 'date-fns';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+import { buildApiUrl } from '@/lib/api';
+import { getAuthorizedHeaders } from '@/lib/server-api';
+
+export async function GET(request: NextRequest) {
+  const headers = await getAuthorizedHeaders(request);
+
+  if (!headers) {
+    return NextResponse.json([], { status: 200 });
+  }
+
+  const [eventsResponse, beneficiariesResponse] = await Promise.all([
+    fetch(buildApiUrl('/events'), { headers, cache: 'no-store' }),
+    fetch(buildApiUrl('/beneficiaries'), { headers, cache: 'no-store' }),
+  ]);
+
+  const [events, beneficiaries] = await Promise.all([
+    eventsResponse.json(),
+    beneficiariesResponse.json(),
+  ]);
+
+  const today = startOfDay(new Date());
   const notifications = [
-    {
-      id: '1',
-      type: 'upcoming_event',
-      title: 'Upcoming Event: John Doe\'s Birthday',
-      message: 'John Doe\'s birthday is in 3 days.',
-      read: false,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: '2',
-      type: 'subscription_update',
-      title: 'Subscription Update',
-      message: 'Your subscription has been renewed.',
-      read: false,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: '3',
-      type: 'beneficiary_birthday',
-      title: 'Beneficiary Birthday: Jane Doe',
-      message: 'It\'s Jane Doe\'s birthday today!',
-      read: true,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: '4',
-      type: 'system_announcement',
-      title: 'System Announcement',
-      message: 'We will be undergoing maintenance on Sunday.',
-      read: false,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: '5',
-      type: 'security_alert',
-      title: 'Security Alert',
-      message: 'A new device has been logged into your account.',
-      read: false,
-      createdAt: new Date().toISOString(),
-    },
-  ];
+    ...events
+      .filter((event: { date: string }) => {
+        const daysRemaining = differenceInCalendarDays(new Date(event.date), today);
+        return daysRemaining >= 0 && daysRemaining <= 14;
+      })
+      .map((event: any) => {
+        const daysRemaining = differenceInCalendarDays(new Date(event.date), today);
+        const beneficiaryName = event.beneficiary
+          ? `${event.beneficiary.firstName} ${event.beneficiary.lastName}`
+          : 'your beneficiary';
+
+        return {
+          id: `event-${event.id}`,
+          type: 'upcoming_event',
+          title: `Upcoming ${event.type}: ${event.title}`,
+          message:
+            daysRemaining === 0
+              ? `${beneficiaryName}'s occasion is happening today.`
+              : `${beneficiaryName}'s occasion is in ${daysRemaining} day${daysRemaining === 1 ? '' : 's'}.`,
+          read: false,
+          createdAt: event.createdAt,
+        };
+      }),
+    ...beneficiaries
+      .slice(0, 3)
+      .map((beneficiary: any) => ({
+        id: `beneficiary-${beneficiary.id}`,
+        type: 'beneficiary_update',
+        title: `Profile ready: ${beneficiary.firstName} ${beneficiary.lastName}`,
+        message: `${beneficiary.relationship} profile is ready for event planning and gifting reminders.`,
+        read: false,
+        createdAt: beneficiary.createdAt,
+      })),
+  ]
+    .sort(
+      (first, second) =>
+        new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime(),
+    )
+    .slice(0, 8);
+
   return NextResponse.json(notifications);
 }

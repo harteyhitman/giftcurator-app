@@ -3,13 +3,14 @@ import { NextRequest } from 'next/server';
 import { proxyToBackend } from '@/lib/server-api';
 
 export async function GET(request: NextRequest) {
-  return proxyToBackend(request, '/beneficiaries');
+  return proxyToBackend(request, '/users/me');
 }
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   const body = await request.json();
-  return proxyToBackend(request, '/beneficiaries', {
-    method: 'POST',
+
+  return proxyToBackend(request, '/users/me', {
+    method: 'PATCH',
     body: JSON.stringify(body),
   });
 }

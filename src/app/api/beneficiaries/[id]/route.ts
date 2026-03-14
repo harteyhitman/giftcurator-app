@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 import { startOfDay } from 'date-fns';
 
 import { buildApiUrl } from '@/lib/api';
+import { getAccessToken } from '@/lib/server-api';
 
 type BackendEvent = {
   id: string;
@@ -33,18 +33,17 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
-  const userId = token?.user?.id;
+  const accessToken = await getAccessToken(request);
 
-  if (!userId) {
+  if (!accessToken) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   const { id } = await params;
   const response = await fetch(buildApiUrl(`/beneficiaries/${id}`), {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     cache: 'no-store',
   });
 
@@ -54,10 +53,6 @@ export async function GET(
   }
 
   const beneficiary = (await response.json()) as BackendBeneficiary;
-
-  if (beneficiary.userId !== userId) {
-    return NextResponse.json({ message: 'Not found' }, { status: 404 });
-  }
 
   const today = startOfDay(new Date()).getTime();
   const sortedEvents = [...(beneficiary.events ?? [])].sort(
