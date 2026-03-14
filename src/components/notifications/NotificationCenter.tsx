@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -19,7 +18,21 @@ export default function NotificationCenter() {
 
   const handleMarkAllAsRead = async () => {
     trackEvent('mark_all_as_read', 'Notifications', 'Click');
-    await fetch('/api/notifications/mark-all-as-read', { method: 'POST' });
+    await fetch('/api/notifications/mark-all-as-read', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ids: notifications?.map((notification: any) => notification.id) ?? [],
+      }),
+    });
+
+    mutate(
+      '/api/notifications',
+      notifications?.map((notification: any) => ({ ...notification, read: true })),
+      false,
+    );
     mutate('/api/notifications');
   };
 
