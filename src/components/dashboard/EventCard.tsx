@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Cake, Gift, ShoppingCart } from 'lucide-react';
 
-interface EventCardProps {
+export interface EventCardProps {
   eventName: string;
   eventType: string;
   beneficiaryName: string;

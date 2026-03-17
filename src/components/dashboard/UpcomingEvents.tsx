@@ -1,7 +1,9 @@
 'use client';
 
 import useSWR from 'swr';
-import EventCard from './EventCard';
+import EventCard, { type EventCardProps } from './EventCard';
+
+type UpcomingEventItem = EventCardProps & { id: string };
 import { Skeleton } from '@/components/ui/skeleton';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -23,7 +25,7 @@ export default function UpcomingEvents() {
     );
   }
 
-  const events = Array.isArray(data) ? data : [];
+  const events: UpcomingEventItem[] = Array.isArray(data) ? data : [];
 
   return (
     <div>
@@ -32,9 +34,10 @@ export default function UpcomingEvents() {
         {events.length === 0 ? (
           <p className="text-muted-foreground text-sm col-span-full">No upcoming events</p>
         ) : (
-          events.map((event: { id: string }) => (
-            <EventCard key={event.id} {...event} />
-          ))
+          events.map((event) => {
+            const { id, ...cardProps } = event;
+            return <EventCard key={id} {...cardProps} />;
+          })
         )}
       </div>
     </div>
