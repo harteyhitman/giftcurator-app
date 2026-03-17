@@ -1,52 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildApiUrl } from '@/lib/api';
-import { getAuthorizedHeaders } from '@/lib/server-api';
+import { safeBackendFetch } from '@/lib/server-api';
+
+type Beneficiary = { id: string; firstName?: string; lastName?: string; createdAt: string };
+type Event = { id: string; title: string; createdAt: string };
+type Profile = { subscriptions?: Array<{ id: string; status: string; updatedAt?: string }> };
 
 export async function GET(request: NextRequest) {
-  const headers = await getAuthorizedHeaders(request);
-
-  if (!headers) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  }
-
-  const [beneficiariesResponse, eventsResponse, profileResponse] = await Promise.all([
-    fetch(buildApiUrl('/beneficiaries'), { headers, cache: 'no-store' }),
-    fetch(buildApiUrl('/events'), { headers, cache: 'no-store' }),
-    fetch(buildApiUrl('/users/me'), { headers, cache: 'no-store' }),
+  const [beneficiariesResult, eventsResult, profileResult] = await Promise.all([
+    safeBackendFetch<Beneficiary[]>('/beneficiaries', request),
+    safeBackendFetch<Event[]>('/events', request),
+    safeBackendFetch<Profile>('/users/me', request),
   ]);
 
-  const [beneficiaries, events, profile] = await Promise.all([
-    beneficiariesResponse.json(),
-    eventsResponse.json(),
-    profileResponse.json(),
-  ]);
+  const beneficiaries = beneficiariesResult.ok && Array.isArray(beneficiariesResult.data) ? beneficiariesResult.data : [];
+  const events = eventsResult.ok && Array.isArray(eventsResult.data) ? eventsResult.data : [];
+  const profile = profileResult.ok ? profileResult.data : { subscriptions: undefined };
 
   const activities = [
-    ...beneficiaries.map((beneficiary: any) => ({
-      id: `beneficiary-${beneficiary.id}`,
-      activity: `New beneficiary added: ${beneficiary.firstName} ${beneficiary.lastName}`,
-      timestamp: beneficiary.createdAt,
+    ...beneficiaries.map((b) => ({
+      id: `beneficiary-${b.id}`,
+      activity: `New beneficiary added: ${b.firstName ?? ''} ${b.lastName ?? ''}`.trim() || 'New beneficiary',
+      timestamp: b.createdAt,
     })),
-    ...events.map((event: any) => ({
-      id: `event-${event.id}`,
-      activity: `Event created: ${event.title}`,
-      timestamp: event.createdAt,
+    ...events.map((e) => ({
+      id: `event-${e.id}`,
+      activity: `Event created: ${e.title ?? 'Event'}`,
+      timestamp: e.createdAt,
     })),
-    ...(profile.subscriptions?.[0]
+    ...(profile?.subscriptions?.[0]
       ? [
           {
             id: `subscription-${profile.subscriptions[0].id}`,
             activity: `Subscription status: ${profile.subscriptions[0].status}`,
-            timestamp: profile.subscriptions[0].updatedAt,
+            timestamp: profile.subscriptions[0].updatedAt ?? profile.subscriptions[0].id,
           },
         ]
       : []),
   ]
-    .sort(
-      (first, second) =>
-        new Date(second.timestamp).getTime() - new Date(first.timestamp).getTime(),
-    )
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     .slice(0, 5);
 
   return NextResponse.json(activities);

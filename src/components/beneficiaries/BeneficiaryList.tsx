@@ -28,7 +28,8 @@ export default function BeneficiaryList() {
     );
   }
 
-  const sortedData = [...data].sort((a: any, b: any) => {
+  const list = Array.isArray(data) ? data : [];
+  const sortedData = [...list].sort((a: any, b: any) => {
     if (sort === 'recent') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -7,6 +8,39 @@ import Link from 'next/link';
 
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
+
+const mockFaqs = [
+  {
+    id: 'how-it-works',
+    question: 'How does Gifting help me choose the right gift?',
+    answer:
+      'Gifting uses profile details, interests, budgets, and occasion context to suggest thoughtful gift ideas faster. This is placeholder copy for now and can be replaced once your final FAQ content is ready.',
+  },
+  {
+    id: 'pricing',
+    question: 'Do I need to pay before using the platform?',
+    answer:
+      'Not necessarily. You can use this section to explain free trials, free plans, or when paid access starts. For now, this answer is mock data meant to show how expanded FAQ content will look.',
+  },
+  {
+    id: 'wishlist-sharing',
+    question: 'Can I share gift lists or recommendations with others?',
+    answer:
+      'Yes, this mock answer assumes users will be able to share curated lists, recommendations, or event-based ideas with friends, family, or teams. Update this text later to match the real product flow.',
+  },
+  {
+    id: 'occasions',
+    question: 'Can I use Gifting for birthdays, weddings, and corporate gifting?',
+    answer:
+      'Absolutely. The landing page FAQ can mention different use cases like birthdays, anniversaries, holidays, weddings, and work gifting. This is temporary filler content until the final approved questions arrive.',
+  },
+  {
+    id: 'support',
+    question: 'What happens if I need help or have a question?',
+    answer:
+      'You can later replace this answer with your real support process, such as email, chat, or a help center. Right now it simply demonstrates the accordion interaction and spacing on the page.',
+  },
+];
 
 export default function LandingPage() {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay()]);
@@ -423,18 +457,22 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="max-w-3xl mx-auto">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="mb-4">
-                <h3 className="text-xl font-bold mb-2">Category {i + 1}</h3>
-                <div className="space-y-2">
-                  {[...Array(3)].map((_, j) => (
-                    <div key={j} className="p-4 border rounded-lg bg-card">
-                      <p className="font-semibold">Question {j + 1}?</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <Accordion type="single" collapsible className="w-full space-y-4">
+              {mockFaqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={faq.id}
+                  className="rounded-2xl border bg-card px-6 shadow-sm"
+                >
+                  <AccordionTrigger className="text-left text-base sm:text-lg font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base leading-7 text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </motion.section>

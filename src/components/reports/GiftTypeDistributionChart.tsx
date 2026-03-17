@@ -9,8 +9,9 @@ import { Pie, PieChart, ResponsiveContainer, Cell } from 'recharts';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export default function GiftTypeDistributionChart({ data }: { data: any[] }) {
+export default function GiftTypeDistributionChart({ data }: { data?: any[] }) {
   const chartRef = useRef<HTMLDivElement>(null);
+  const safeData = Array.isArray(data) ? data : [];
 
   const handleDownload = () => {
     if (chartRef.current) {
@@ -34,8 +35,8 @@ export default function GiftTypeDistributionChart({ data }: { data: any[] }) {
       <CardContent>
         <ResponsiveContainer width="100%" height={200} ref={chartRef}>
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
-              {data.map((entry, index) => (
+            <Pie data={safeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+              {safeData.map((_entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>

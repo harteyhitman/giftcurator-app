@@ -33,8 +33,9 @@ export default function EventList() {
     </Card>
   );
 
+  const eventList = Array.isArray(events) ? events : [];
   const today = startOfDay(new Date()).getTime();
-  const sortedEvents = [...events].sort(
+  const sortedEvents = [...eventList].sort(
     (first: any, second: any) =>
       new Date(first.date).getTime() - new Date(second.date).getTime()
   );

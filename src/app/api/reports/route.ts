@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildApiUrl } from '@/lib/api';
-import { getAuthorizedHeaders } from '@/lib/server-api';
+import { safeBackendFetch } from '@/lib/server-api';
 
 function getGiftType(eventType: string) {
   switch (eventType.toLowerCase()) {
@@ -33,19 +32,22 @@ function getEventAmount(event: any) {
   return baseAmounts[event.type?.toLowerCase()] ?? 40;
 }
 
-export async function GET(request: NextRequest) {
-  const headers = await getAuthorizedHeaders(request);
+const emptyReport = {
+  totalSpent: { amount: 0, trend: 0 },
+  eventsPerMonth: [],
+  giftTypeDistribution: [],
+  spendingByBeneficiary: [],
+  transactions: [],
+};
 
-  if (!headers) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+export async function GET(request: NextRequest) {
+  const result = await safeBackendFetch<Array<Record<string, unknown>>>('/events', request);
+
+  if (!result.ok || !Array.isArray(result.data)) {
+    return NextResponse.json(emptyReport);
   }
 
-  const response = await fetch(buildApiUrl('/events'), {
-    headers,
-    cache: 'no-store',
-  });
-
-  const events = await response.json();
+  const events = result.data;
 
   const transactions = events.map((event: any) => {
     const amount = getEventAmount(event);

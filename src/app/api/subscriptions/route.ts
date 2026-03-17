@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildApiUrl } from '@/lib/api';
-import { getAuthorizedHeaders } from '@/lib/server-api';
+import { getAuthorizedHeaders, safeBackendFetch } from '@/lib/server-api';
 
 const PLANS = [
   {
@@ -56,13 +55,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const response = await fetch(buildApiUrl('/users/me'), {
-    headers,
-    cache: 'no-store',
-  });
-
-  const profile = await response.json();
-  const subscriptions = profile.subscriptions ?? [];
+  const result = await safeBackendFetch<{ subscriptions?: Array<{ id: string; plan?: string; status?: string; startDate?: string; endDate?: string }> }>('/users/me', request);
+  const profile = result.ok ? result.data : null;
+  const subscriptions = Array.isArray(profile?.subscriptions) ? profile.subscriptions : [];
   const latestSubscription = subscriptions[0];
   const currentPlanName = latestSubscription?.plan ?? 'Basic';
 
@@ -78,7 +73,7 @@ export async function GET(request: NextRequest) {
         expiry: '12/28',
       },
     },
-    billingHistory: subscriptions.map((subscription: any) => ({
+    billingHistory: subscriptions.map((subscription) => ({
       id: subscription.id,
       date: subscription.startDate,
       amount: getPlanPricing(subscription.plan),

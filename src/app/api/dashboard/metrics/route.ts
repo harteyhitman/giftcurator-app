@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { startOfDay } from 'date-fns';
 
-import { buildApiUrl } from '@/lib/api';
-import { getAuthorizedHeaders } from '@/lib/server-api';
+import { getAuthorizedHeaders, safeBackendFetch } from '@/lib/server-api';
 
 export async function GET(request: NextRequest) {
   const headers = await getAuthorizedHeaders(request);
@@ -11,27 +10,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const [eventsResponse, beneficiariesResponse, profileResponse] = await Promise.all([
-    fetch(buildApiUrl('/events'), { headers, cache: 'no-store' }),
-    fetch(buildApiUrl('/beneficiaries'), { headers, cache: 'no-store' }),
-    fetch(buildApiUrl('/users/me'), { headers, cache: 'no-store' }),
+  const [eventsResult, beneficiariesResult, profileResult] = await Promise.all([
+    safeBackendFetch<Array<{ date: string }>>('/events', request),
+    safeBackendFetch<Array<unknown>>('/beneficiaries', request),
+    safeBackendFetch<{ subscriptions?: Array<{ status: string }> }>('/users/me', request),
   ]);
 
-  const [events, beneficiaries, profile] = await Promise.all([
-    eventsResponse.json(),
-    beneficiariesResponse.json(),
-    profileResponse.json(),
-  ]);
+  const events = eventsResult.ok ? eventsResult.data : [];
+  const beneficiaries = beneficiariesResult.ok ? beneficiariesResult.data : [];
+  const profile = profileResult.ok ? profileResult.data : { subscriptions: undefined };
 
   const today = startOfDay(new Date()).getTime();
-  const upcomingEvents = events.filter(
-    (event: { date: string }) => new Date(event.date).getTime() >= today,
-  );
-  const latestSubscription = profile.subscriptions?.[0];
+  const upcomingEvents = Array.isArray(events)
+    ? events.filter((event) => new Date(event.date).getTime() >= today)
+    : [];
+  const latestSubscription = profile?.subscriptions?.[0];
 
   return NextResponse.json({
-    totalEvents: { value: events.length },
-    activeBeneficiaries: { value: beneficiaries.length },
+    totalEvents: { value: Array.isArray(events) ? events.length : 0 },
+    activeBeneficiaries: { value: Array.isArray(beneficiaries) ? beneficiaries.length : 0 },
     upcomingEvents: { value: upcomingEvents.length },
     subscriptionStatus: { value: latestSubscription?.status ?? 'No plan' },
   });

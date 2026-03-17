@@ -14,20 +14,20 @@ export default function Faq() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
+  const faqList = Array.isArray(data) ? data : [];
+
   const filteredFaqs = useMemo(() => {
-    if (!data) return [];
-    return data.filter(
-      (faq: any) =>
+    return faqList.filter(
+      (faq: { category?: string; question?: string; answer?: string }) =>
         (selectedCategory === 'All' || faq.category === selectedCategory) &&
-        (faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          faq.answer.toLowerCase().includes(searchTerm.toLowerCase()))
+        ((faq.question ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (faq.answer ?? '').toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [data, searchTerm, selectedCategory]);
+  }, [faqList, searchTerm, selectedCategory]);
 
   const categories = useMemo(() => {
-    if (!data) return [];
-    return ['All', ...Array.from(new Set(data.map((faq: any) => faq.category)))];
-  }, [data]);
+    return ['All', ...Array.from(new Set(faqList.map((faq: { category?: string }) => faq.category).filter(Boolean)))];
+  }, [faqList]);
 
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;

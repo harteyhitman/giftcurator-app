@@ -12,8 +12,9 @@ export default function PlanComparisonTable() {
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
+  const plans = Array.isArray(data?.plans) ? data.plans : [];
   const allFeatures = Array.from(
-    new Set(data.plans.flatMap((plan: any) => plan.features))
+    new Set(plans.flatMap((plan: { features?: string[] }) => plan.features ?? []))
   );
 
   return (
@@ -22,7 +23,7 @@ export default function PlanComparisonTable() {
         <TableHeader>
           <TableRow>
             <TableHead>Feature</TableHead>
-            {data.plans.map((plan: any) => (
+            {plans.map((plan: any) => (
               <TableHead key={plan.name}>{plan.name}</TableHead>
             ))}
           </TableRow>
@@ -31,9 +32,9 @@ export default function PlanComparisonTable() {
           {allFeatures.map((feature) => (
             <TableRow key={feature as string}>
               <TableCell>{feature as string}</TableCell>
-              {data.plans.map((plan: any) => (
+              {plans.map((plan: any) => (
                 <TableCell key={plan.name}>
-                  {plan.features.includes(feature) ? (
+                  {(Array.isArray(plan.features) ? plan.features : []).includes(feature) ? (
                     <Check className="w-5 h-5 text-green-500" />
                   ) : (
                     <X className="w-5 h-5 text-red-500" />

@@ -19,6 +19,8 @@ export default function SubscriptionPlans() {
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
+  const plans = Array.isArray(data?.plans) ? data.plans : [];
+
   const handleChoosePlan = (planName: string) => {
     trackEvent('choose_plan', 'Subscription', planName);
   };
@@ -31,7 +33,7 @@ export default function SubscriptionPlans() {
         <span>Annual</span>
       </div>
       <div className="grid gap-8 md:grid-cols-3">
-        {data.plans.map((plan: any) => (
+        {plans.map((plan: any) => (
           <Card key={plan.name} className={plan.popular ? 'border-purple-500' : ''}>
             <CardHeader>
               <CardTitle>{plan.name}</CardTitle>
@@ -43,7 +45,7 @@ export default function SubscriptionPlans() {
                 <span className="text-lg font-normal">/{isAnnual ? 'year' : 'month'}</span>
               </div>
               <ul className="space-y-2">
-                {plan.features.map((feature: string) => (
+                {(Array.isArray(plan.features) ? plan.features : []).map((feature: string) => (
                   <li key={feature} className="flex items-center">
                     <Check className="w-4 h-4 mr-2 text-green-500" />
                     <span>{feature}</span>

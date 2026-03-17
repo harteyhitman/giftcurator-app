@@ -1,9 +1,13 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { proxyToBackend } from '@/lib/server-api';
+import { proxyToBackend, safeBackendFetch } from '@/lib/server-api';
 
 export async function GET(request: NextRequest) {
-  return proxyToBackend(request, '/beneficiaries');
+  const result = await safeBackendFetch<unknown[]>('/beneficiaries', request);
+  if (!result.ok) {
+    return NextResponse.json([], { status: 200 });
+  }
+  return NextResponse.json(Array.isArray(result.data) ? result.data : []);
 }
 
 export async function POST(request: NextRequest) {

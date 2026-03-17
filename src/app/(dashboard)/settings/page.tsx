@@ -97,14 +97,14 @@ export default function SettingsPage() {
 
       <div className="grid gap-4 md:grid-cols-3">
         {stats.map((item) => (
-          <Card key={item.label} className="rounded-2xl border-primary/10">
+          <Card key={item?.label} className="rounded-2xl border-primary/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                {item.label}
+                {item?.label ?? '—'}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-black">{item.value}</p>
+              <p className="text-3xl font-black">{item?.value ?? '—'}</p>
             </CardContent>
           </Card>
         ))}

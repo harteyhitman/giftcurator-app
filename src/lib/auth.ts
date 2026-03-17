@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import LinkedInProvider from 'next-auth/providers/linkedin';
 
-import { apiFetch } from '@/lib/api';
+import { apiFetch, getApiBaseUrl } from '@/lib/api';
 
 type AuthResponse = {
   access_token: string;
@@ -56,9 +56,37 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
+    async jwt({ token, user, account, profile }) {
+      if (account?.provider === 'linkedin') {
+        throw new Error('LinkedIn sign-in is not wired to the API yet. Use email/password or Google.');
+      }
+      if (account?.provider === 'google' && account.id_token) {
+        const res = await fetch(`${getApiBaseUrl()}/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: account.id_token }),
+        });
+        if (!res.ok) {
+          throw new Error(
+            'Could not complete sign-in with the API. Check GOOGLE_CLIENT_ID on Render matches Vercel.',
+          );
+        }
+        const data = (await res.json()) as AuthResponse;
+        token.user = {
+          id: data.user.id,
+          email: data.user.email,
+          name: [data.user.firstName, data.user.lastName].filter(Boolean).join(' ') || profile?.name,
+          mobileNumber: data.user.mobileNumber ?? null,
+          accessToken: data.access_token,
+        };
+      } else if (user && 'accessToken' in user && user.accessToken) {
+        token.user = {
+          id: user.id,
+          email: user.email ?? undefined,
+          name: user.name,
+          mobileNumber: user.mobileNumber ?? null,
+          accessToken: user.accessToken,
+        };
       }
 
       return token;

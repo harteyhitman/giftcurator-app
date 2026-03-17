@@ -12,6 +12,7 @@ interface EventCardProps {
 }
 
 export default function EventCard({ eventName, eventType, beneficiaryName, daysRemaining, progress }: EventCardProps) {
+  const safeProgress = typeof progress === 'number' && Number.isFinite(progress) ? progress : 0;
   const getEventIcon = () => {
     switch (eventType) {
       case 'Birthday':
@@ -43,7 +44,7 @@ export default function EventCard({ eventName, eventType, beneficiaryName, daysR
             <p className="text-sm font-bold">Status</p>
             <p className="text-sm font-black text-primary">{daysRemaining} days left</p>
           </div>
-          <Progress value={progress * 100} className="h-2 rounded-full bg-primary/10" />
+          <Progress value={safeProgress * 100} className="h-2 rounded-full bg-primary/10" />
         </div>
       </CardContent>
       <CardFooter className="flex justify-end gap-3 pt-4 border-t border-primary/5 bg-primary/5">

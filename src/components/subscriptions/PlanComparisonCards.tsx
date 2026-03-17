@@ -12,13 +12,14 @@ export default function PlanComparisonCards() {
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
 
+  const plans = Array.isArray(data?.plans) ? data.plans : [];
   const allFeatures = Array.from(
-    new Set(data.plans.flatMap((plan: any) => plan.features))
+    new Set(plans.flatMap((plan: { features?: string[] }) => plan.features ?? []))
   );
 
   return (
     <div className="grid gap-8 md:hidden">
-      {data.plans.map((plan: any) => (
+      {plans.map((plan: any) => (
         <Card key={plan.name}>
           <CardHeader>
             <CardTitle>{plan.name}</CardTitle>

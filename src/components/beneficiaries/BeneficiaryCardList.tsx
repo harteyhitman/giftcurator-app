@@ -18,7 +18,8 @@ export default function BeneficiaryCardList() {
     </div>
   );
 
-  if (beneficiaries.length === 0) {
+  const list = Array.isArray(beneficiaries) ? beneficiaries : [];
+  if (list.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed border-primary/15 bg-primary/[0.03] p-10 text-center">
         <h2 className="text-2xl font-black">No beneficiaries yet</h2>
@@ -33,12 +34,12 @@ export default function BeneficiaryCardList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-muted-foreground">
-          {beneficiaries.length} beneficiary{beneficiaries.length === 1 ? '' : 'ies'} in your gifting circle
+          {list.length} beneficiary{list.length === 1 ? '' : 'ies'} in your gifting circle
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence>
-          {beneficiaries.map((beneficiary: any) => (
+          {list.map((beneficiary: any) => (
             <BeneficiaryCard key={beneficiary.id} beneficiary={beneficiary} />
           ))}
         </AnimatePresence>

@@ -12,15 +12,17 @@ const COLORS = ['#6d28d9', '#d97706', '#4c1d95', '#fbbf24'];
 export default function GiftingInsights() {
   const { data, error } = useSWR('/api/dashboard/insights', fetcher);
 
-  if (error) return <div className="p-4 text-red-500">Failed to load insights</div>;
+  if (error) return <div className="p-4 text-muted-foreground text-sm">Failed to load insights</div>;
   if (!data) return <Skeleton className="h-80 w-full rounded-3xl" />;
 
-  const total = data.reduce((sum: number, item: { value: number }) => sum + item.value, 0);
+  const list = Array.isArray(data) ? data : [];
+  const total = list.reduce((sum: number, item: { value?: number }) => sum + (Number(item?.value) || 0), 0);
   let currentAngle = 0;
   const gradient = total
-    ? `conic-gradient(${data
-        .map((item: { value: number }, index: number) => {
-          const angle = (item.value / total) * 360;
+    ? `conic-gradient(${list
+        .map((item: { value?: number }, index: number) => {
+          const val = Number(item?.value) || 0;
+          const angle = (val / total) * 360;
           const segment = `${COLORS[index % COLORS.length]} ${currentAngle}deg ${currentAngle + angle}deg`;
           currentAngle += angle;
           return segment;
@@ -51,18 +53,20 @@ export default function GiftingInsights() {
             </div>
           </div>
           <div className="grid gap-4">
-            {data.map((item: { name: string; value: number }, index: number) => {
-              const percentage = total ? Math.round((item.value / total) * 100) : 0;
+            {list.map((item: { name?: string; value?: number }, index: number) => {
+              const val = Number(item?.value) || 0;
+              const percentage = total ? Math.round((val / total) * 100) : 0;
+              const name = item?.name ?? `Item ${index + 1}`;
 
               return (
-                <div key={item.name} className="rounded-2xl border border-primary/10 p-4">
+                <div key={name} className="rounded-2xl border border-primary/10 p-4">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span
                         className="h-3 w-3 rounded-full"
                         style={{ backgroundColor: COLORS[index % COLORS.length] }}
                       />
-                      <p className="font-semibold">{item.name}</p>
+                      <p className="font-semibold">{name}</p>
                     </div>
                     <Badge variant="secondary" className="rounded-full px-3 py-1">
                       {percentage}%
@@ -77,7 +81,7 @@ export default function GiftingInsights() {
                       }}
                     />
                   </div>
-                  <p className="text-sm text-muted-foreground">{item.value} activities recorded</p>
+                  <p className="text-sm text-muted-foreground">{val} activities recorded</p>
                 </div>
               );
             })}

@@ -1,47 +1,38 @@
 import { differenceInCalendarDays, startOfDay } from 'date-fns';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildApiUrl } from '@/lib/api';
 import { READ_NOTIFICATIONS_COOKIE, parseReadNotificationIds } from '@/lib/notifications';
-import { getAuthorizedHeaders } from '@/lib/server-api';
+import { safeBackendFetch } from '@/lib/server-api';
 
 export async function GET(request: NextRequest) {
-  const headers = await getAuthorizedHeaders(request);
   const readIds = parseReadNotificationIds(
-    request.cookies.get(READ_NOTIFICATIONS_COOKIE)?.value,
+    request.cookies.get(READ_NOTIFICATIONS_COOKIE)?.value ?? undefined,
   );
 
-  if (!headers) {
-    return NextResponse.json([], { status: 200 });
-  }
-
-  const [eventsResponse, beneficiariesResponse] = await Promise.all([
-    fetch(buildApiUrl('/events'), { headers, cache: 'no-store' }),
-    fetch(buildApiUrl('/beneficiaries'), { headers, cache: 'no-store' }),
+  const [eventsResult, beneficiariesResult] = await Promise.all([
+    safeBackendFetch<Array<{ id: string; date: string; createdAt: string; beneficiary?: { firstName?: string; lastName?: string }; type: string; title: string }>>('/events', request),
+    safeBackendFetch<Array<{ id: string; firstName?: string; lastName?: string; relationship?: string; createdAt: string }>>('/beneficiaries', request),
   ]);
 
-  const [events, beneficiaries] = await Promise.all([
-    eventsResponse.json(),
-    beneficiariesResponse.json(),
-  ]);
-
+  const events = eventsResult.ok && Array.isArray(eventsResult.data) ? eventsResult.data : [];
+  const beneficiaries = beneficiariesResult.ok && Array.isArray(beneficiariesResult.data) ? beneficiariesResult.data : [];
   const today = startOfDay(new Date());
   const notifications = [
     ...events
-      .filter((event: { date: string }) => {
+      .filter((event) => {
         const daysRemaining = differenceInCalendarDays(new Date(event.date), today);
         return daysRemaining >= 0 && daysRemaining <= 14;
       })
-      .map((event: any) => {
+      .map((event) => {
         const daysRemaining = differenceInCalendarDays(new Date(event.date), today);
         const beneficiaryName = event.beneficiary
-          ? `${event.beneficiary.firstName} ${event.beneficiary.lastName}`
+          ? `${event.beneficiary.firstName ?? ''} ${event.beneficiary.lastName ?? ''}`.trim() || 'your beneficiary'
           : 'your beneficiary';
 
         return {
           id: `event-${event.id}`,
           type: 'upcoming_event',
-          title: `Upcoming ${event.type}: ${event.title}`,
+          title: `Upcoming ${event.type ?? 'event'}: ${event.title ?? 'Event'}`,
           message:
             daysRemaining === 0
               ? `${beneficiaryName}'s occasion is happening today.`
@@ -50,16 +41,14 @@ export async function GET(request: NextRequest) {
           createdAt: event.createdAt,
         };
       }),
-    ...beneficiaries
-      .slice(0, 3)
-      .map((beneficiary: any) => ({
-        id: `beneficiary-${beneficiary.id}`,
-        type: 'beneficiary_update',
-        title: `Profile ready: ${beneficiary.firstName} ${beneficiary.lastName}`,
-        message: `${beneficiary.relationship} profile is ready for event planning and gifting reminders.`,
-        read: readIds.has(`beneficiary-${beneficiary.id}`),
-        createdAt: beneficiary.createdAt,
-      })),
+    ...beneficiaries.slice(0, 3).map((beneficiary) => ({
+      id: `beneficiary-${beneficiary.id}`,
+      type: 'beneficiary_update',
+      title: `Profile ready: ${beneficiary.firstName ?? ''} ${beneficiary.lastName ?? ''}`.trim() || 'Beneficiary',
+      message: `${beneficiary.relationship ?? 'Profile'} is ready for event planning and gifting reminders.`,
+      read: readIds.has(`beneficiary-${beneficiary.id}`),
+      createdAt: beneficiary.createdAt,
+    })),
   ]
     .sort(
       (first, second) =>

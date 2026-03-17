@@ -14,7 +14,8 @@ export default function NotificationCenter() {
   const { data: notifications } = useSWR('/api/notifications', fetcher);
   const { trackEvent } = useAnalytics();
 
-  const unreadCount = notifications?.filter((n: any) => !n.read).length || 0;
+  const list = Array.isArray(notifications) ? notifications : [];
+  const unreadCount = list.filter((n: { read?: boolean }) => !n.read).length;
 
   const handleMarkAllAsRead = async () => {
     trackEvent('mark_all_as_read', 'Notifications', 'Click');
@@ -24,13 +25,13 @@ export default function NotificationCenter() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ids: notifications?.map((notification: any) => notification.id) ?? [],
+        ids: list.map((n: { id: string }) => n.id),
       }),
     });
 
     mutate(
       '/api/notifications',
-      notifications?.map((notification: any) => ({ ...notification, read: true })),
+      list.map((n: { id: string; read?: boolean }) => ({ ...n, read: true })),
       false,
     );
     mutate('/api/notifications');
@@ -62,7 +63,7 @@ export default function NotificationCenter() {
             <p className="text-sm text-muted-foreground">You have {unreadCount} unread messages.</p>
           </div>
           <div className="grid gap-2">
-            {notifications?.slice(0, 5).map((n: any) => (
+            {list.slice(0, 5).map((n: { id: string; read?: boolean; title?: string; message?: string }) => (
               <div key={n.id} className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
                 <span className={`flex w-2 h-2 translate-y-1 rounded-full ${n.read ? 'bg-gray-300' : 'bg-sky-500'}`} />
                 <div className="space-y-1">

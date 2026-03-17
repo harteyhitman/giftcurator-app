@@ -4,17 +4,24 @@ function stripTrailingSlash(value: string) {
   return value.replace(/\/+$/, '');
 }
 
+function toApiBaseUrl(raw: string) {
+  const normalized = stripTrailingSlash(raw.trim());
+  return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+}
+
 export function getApiBaseUrl() {
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+  const isServer = typeof window === 'undefined';
+  const serverBase =
+    isServer && process.env.BACKEND_API_URL?.trim()
+      ? toApiBaseUrl(process.env.BACKEND_API_URL)
+      : '';
+  const publicBase = process.env.NEXT_PUBLIC_API_URL?.trim()
+    ? toApiBaseUrl(process.env.NEXT_PUBLIC_API_URL)
+    : '';
 
-  if (!configuredBaseUrl) {
-    return LOCAL_API_BASE_URL;
-  }
-
-  const normalizedBaseUrl = stripTrailingSlash(configuredBaseUrl);
-  return normalizedBaseUrl.endsWith('/api')
-    ? normalizedBaseUrl
-    : `${normalizedBaseUrl}/api`;
+  if (serverBase) return serverBase;
+  if (publicBase) return publicBase;
+  return LOCAL_API_BASE_URL;
 }
 
 export function buildApiUrl(path: string) {

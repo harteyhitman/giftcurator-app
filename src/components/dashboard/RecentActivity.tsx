@@ -26,7 +26,7 @@ const getActivityIcon = (activity: string) => {
 export default function RecentActivity() {
   const { data, error } = useSWR('/api/dashboard/recent-activity', fetcher);
 
-  if (error) return <div>Failed to load</div>;
+  if (error) return <div className="text-muted-foreground text-sm">Failed to load</div>;
   if (!data) {
     return (
       <div>
@@ -51,23 +51,29 @@ export default function RecentActivity() {
     );
   }
 
+  const activities = Array.isArray(data) ? data : [];
+
   return (
     <div>
       <h2 className="text-xl font-bold">Recent Activity</h2>
       <div className="mt-4 space-y-4">
-        {data.map((activity: any) => (
-          <div key={activity.id} className="flex items-center gap-4">
-            <Avatar>
-              <AvatarFallback>{getActivityIcon(activity.activity)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm">{activity.activity}</p>
-              <p className="text-xs text-muted-foreground">
-                {new Date(activity.timestamp).toLocaleDateString()}
-              </p>
+        {activities.length === 0 ? (
+          <p className="text-muted-foreground text-sm">No recent activity</p>
+        ) : (
+          activities.map((activity: { id: string; activity?: string; timestamp?: string }) => (
+            <div key={activity.id} className="flex items-center gap-4">
+              <Avatar>
+                <AvatarFallback>{getActivityIcon(activity.activity ?? '')}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm">{activity.activity ?? 'Activity'}</p>
+                <p className="text-xs text-muted-foreground">
+                  {activity.timestamp ? new Date(activity.timestamp).toLocaleDateString() : '—'}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
