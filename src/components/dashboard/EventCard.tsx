@@ -28,8 +28,8 @@ export default function EventCard({ eventName, eventType, beneficiaryName, daysR
 
   return (
     <Card className="rounded-3xl border-primary/5 shadow-sm hover:shadow-md transition-all group overflow-hidden">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between mb-2">
+      <CardHeader className="pb-4 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-4 sm:mb-2 gap-2">
           <div className={`p-2 rounded-xl group-hover:scale-110 transition-transform ${eventType === 'Birthday' ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'}`}>
             {getEventIcon()}
           </div>
@@ -40,19 +40,19 @@ export default function EventCard({ eventName, eventType, beneficiaryName, daysR
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-0">
             <p className="text-sm font-bold">Status</p>
             <p className="text-sm font-black text-primary">{daysRemaining} days left</p>
           </div>
           <Progress value={safeProgress * 100} className="h-2 rounded-full bg-primary/10" />
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end gap-3 pt-4 border-t border-primary/5 bg-primary/5">
-        <Button variant="ghost" size="sm" className="font-bold hover:bg-white hover:text-primary transition-all">
+      <CardFooter className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-primary/5 bg-primary/5">
+        <Button variant="ghost" size="sm" className="w-full sm:w-auto font-bold hover:bg-white hover:text-primary transition-all">
           <ShoppingCart className="w-4 h-4 mr-2" />
           Gift
         </Button>
-        <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105">
+        <Button size="sm" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105">
           View Details
         </Button>
       </CardFooter>

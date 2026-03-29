@@ -54,19 +54,19 @@ export default function RecentActivity() {
   const activities = Array.isArray(data) ? data : [];
 
   return (
-    <div>
+    <div className="text-center sm:text-left">
       <h2 className="text-xl font-bold">Recent Activity</h2>
       <div className="mt-4 space-y-4">
         {activities.length === 0 ? (
           <p className="text-muted-foreground text-sm">No recent activity</p>
         ) : (
           activities.map((activity: { id: string; activity?: string; timestamp?: string }) => (
-            <div key={activity.id} className="flex items-center gap-4">
-              <Avatar>
-                <AvatarFallback>{getActivityIcon(activity.activity ?? '')}</AvatarFallback>
+            <div key={activity.id} className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 p-3 rounded-2xl hover:bg-primary/5 transition-colors">
+              <Avatar className="h-10 w-10 border border-primary/10">
+                <AvatarFallback className="bg-primary/5 text-primary">{getActivityIcon(activity.activity ?? '')}</AvatarFallback>
               </Avatar>
-              <div>
-                <p className="text-sm">{activity.activity ?? 'Activity'}</p>
+              <div className="flex flex-col">
+                <p className="text-sm font-medium">{activity.activity ?? 'Activity'}</p>
                 <p className="text-xs text-muted-foreground">
                   {activity.timestamp ? new Date(activity.timestamp).toLocaleDateString() : '—'}
                 </p>

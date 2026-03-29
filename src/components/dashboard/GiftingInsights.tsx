@@ -32,7 +32,7 @@ export default function GiftingInsights() {
 
   return (
     <Card className="rounded-3xl border-primary/5 shadow-sm overflow-hidden">
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 text-center sm:text-left">
         <CardTitle className="text-xl font-black">Gifting Insights</CardTitle>
         <p className="text-sm text-muted-foreground font-medium">Monthly distribution of activities</p>
       </CardHeader>
@@ -43,7 +43,7 @@ export default function GiftingInsights() {
               className="relative flex h-64 w-64 sm:h-72 sm:w-72 items-center justify-center rounded-full"
               style={{ background: gradient }}
             >
-              <div className="flex h-40 w-40 sm:h-44 sm:w-44 flex-col items-center justify-center rounded-full bg-background shadow-inner">
+              <div className="flex h-40 w-40 sm:h-44 sm:w-44 flex-col items-center justify-center rounded-full bg-background shadow-inner text-center">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
                   Total
                 </span>
@@ -52,7 +52,7 @@ export default function GiftingInsights() {
               </div>
             </div>
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-4 text-center sm:text-left">
             {list.map((item: { name?: string; value?: number }, index: number) => {
               const val = Number(item?.value) || 0;
               const percentage = total ? Math.round((val / total) * 100) : 0;
@@ -60,7 +60,7 @@ export default function GiftingInsights() {
 
               return (
                 <div key={name} className="rounded-2xl border border-primary/10 p-4">
-                  <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="mb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <span
                         className="h-3 w-3 rounded-full"

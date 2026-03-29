@@ -235,18 +235,18 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="p-6 sm:p-8 border rounded-lg bg-card">
+            <div className="p-6 sm:p-8 border rounded-lg bg-card text-center sm:text-left">
               <h3 className="text-xl sm:text-2xl font-bold mb-4">😫 Without GiftCurator (The Pain)</h3>
-              <ul className="space-y-4 text-muted-foreground">
+              <ul className="space-y-4 text-muted-foreground inline-block sm:block text-left">
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Forgetting important dates</li>
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Wondering what gift to buy</li>
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Overspending on last-minute gifts</li>
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Last-minute panic and stress</li>
               </ul>
             </div>
-            <div className="p-6 sm:p-8 border rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20">
+            <div className="p-6 sm:p-8 border rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 text-center sm:text-left">
               <h3 className="text-xl sm:text-2xl font-bold mb-4">🎉 With GiftCurator (The Solution)</h3>
-              <ul className="space-y-4 text-foreground">
+              <ul className="space-y-4 text-foreground inline-block sm:block text-left">
                 <li className="flex items-start"><span className="text-green-500 mr-2">&#10003;</span> Automated reminders for every occasion</li>
                 <li className="flex items-start"><span className="text-green-500 mr-2">&#10003;</span> AI-powered, personalized suggestions</li>
                 <li className="flex items-start"><span className="text-green-500 mr-2">&#10003;</span> Smart budget tracking and deals</li>
@@ -277,8 +277,8 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="p-8 rounded-2xl bg-card border border-primary/10 shadow-lg hover:shadow-primary/10 hover:border-primary/40 transition-all duration-300 group">
-                <div className={`flex items-center justify-center h-14 w-14 rounded-2xl mb-8 group-hover:scale-110 transition-transform ${i % 2 === 0 ? 'bg-primary/10 text-primary shadow-[0_0_20px_rgba(var(--primary),0.2)]' : 'bg-secondary/10 text-secondary shadow-[0_0_20px_rgba(var(--secondary),0.2)]'}`}>
+              <div key={i} className="p-8 rounded-2xl bg-card border border-primary/10 shadow-lg hover:shadow-primary/10 hover:border-primary/40 transition-all duration-300 group text-center sm:text-left">
+                <div className={`flex items-center justify-center h-14 w-14 rounded-2xl mb-8 group-hover:scale-110 transition-transform mx-auto sm:mx-0 ${i % 2 === 0 ? 'bg-primary/10 text-primary shadow-[0_0_20px_rgba(var(--primary),0.2)]' : 'bg-secondary/10 text-secondary shadow-[0_0_20px_rgba(var(--secondary),0.2)]'}`}>
                   {/* Placeholder for icon */}
                   <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -373,16 +373,16 @@ export default function LandingPage() {
             <div className="flex">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
-                  <div className="p-8 border rounded-lg bg-card h-full">
-                    <div className="flex items-center mb-4">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-lg mr-4">SJ</div>
+                  <div className="p-8 border rounded-lg bg-card h-full text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center mb-4">
+                      <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-lg mb-4 sm:mb-0 sm:mr-4">SJ</div>
                       <div>
                         <p className="font-bold">Sarah Johnson</p>
                         <p className="text-sm text-muted-foreground">Busy Mom</p>
                       </div>
                     </div>
                     <p className="text-muted-foreground mb-4">&quot;GiftCurator saved me from forgetting my mother-in-law&apos;s 60th! The AI suggestions were spot on.&quot;</p>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-center sm:justify-start gap-1">
                       {[...Array(5)].map((_, j) => (
                         <svg key={j} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.366 2.446a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.539 1.118l-3.365-2.446a1 1 0 00-1.175 0l-3.365 2.446c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.049 2.927z" />
@@ -415,7 +415,7 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8 px-4 sm:px-0">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className={`p-8 border rounded-2xl bg-card h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col ${i === 1 ? 'border-secondary shadow-secondary/10 relative md:scale-105 z-10' : 'border-primary/10'}`}>
+              <div key={i} className={`p-8 border rounded-2xl bg-card h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col text-center sm:text-left ${i === 1 ? 'border-secondary shadow-secondary/10 relative md:scale-105 z-10' : 'border-primary/10'}`}>
                 {i === 1 && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                     Most Popular
@@ -426,7 +426,7 @@ export default function LandingPage() {
                   <span className="text-4xl font-bold">$ {10 * (i + 1)}</span>
                   <span className="text-muted-foreground ml-1">/mo</span>
                 </div>
-                <ul className="space-y-4 text-muted-foreground mb-8 flex-grow">
+                <ul className="space-y-4 text-muted-foreground mb-8 flex-grow inline-block sm:block text-left mx-auto sm:mx-0">
                   <li className="flex items-start"><span className="text-secondary mr-2 font-bold">&#10003;</span> Feature A</li>
                   <li className="flex items-start"><span className="text-secondary mr-2 font-bold">&#10003;</span> Feature B</li>
                   <li className="flex items-start"><span className="text-secondary mr-2 font-bold">&#10003;</span> Feature C</li>
@@ -494,10 +494,10 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="p-8 border rounded-lg bg-card hover:shadow-lg transition-shadow">
+              <div key={i} className="p-8 border rounded-lg bg-card hover:shadow-lg transition-shadow text-center sm:text-left">
                 <h3 className="text-xl font-bold mb-2">Blog Post Title {i + 1}</h3>
                 <p className="text-muted-foreground">A brief excerpt of the blog post goes here.</p>
-                <Button variant="link" className="mt-4">Read More</Button>
+                <Button variant="link" className="mt-4 px-0">Read More</Button>
               </div>
             ))}
           </div>
@@ -553,8 +553,8 @@ export default function LandingPage() {
       </motion.section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t">
-        <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t text-center sm:text-left">
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold mb-4">Product</h3>
             <ul className="space-y-2 text-muted-foreground">
@@ -581,14 +581,14 @@ export default function LandingPage() {
           </div>
           <div>
             <h3 className="font-bold mb-4">Social</h3>
-            <div className="flex gap-4">
-              <Link href="#">X</Link>
-              <Link href="#">Facebook</Link>
-              <Link href="#">Instagram</Link>
+            <div className="flex justify-center sm:justify-start gap-4">
+              <Link href="#" className="hover:text-primary transition-colors">X</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Facebook</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Instagram</Link>
             </div>
           </div>
         </div>
-        <div className="mt-8 text-center text-muted-foreground">
+        <div className="mt-12 text-center text-muted-foreground border-t border-primary/5 pt-8">
           <p>&copy; {new Date().getFullYear()} GiftCurator. All rights reserved.</p>
         </div>
       </footer>
