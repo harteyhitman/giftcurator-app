@@ -37,13 +37,13 @@ export default function GiftingInsights() {
         <p className="text-sm text-muted-foreground font-medium">Monthly distribution of activities</p>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-8 lg:flex-cols-[18rem_1fr] lg:items-center">
-          <div className="flex justify-center">
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[18rem_1fr] lg:items-center">
+          <div className="flex justify-center overflow-hidden">
             <div
-              className="relative flex h-72 w-72 items-center justify-center rounded-full"
+              className="relative flex h-64 w-64 sm:h-72 sm:w-72 items-center justify-center rounded-full"
               style={{ background: gradient }}
             >
-              <div className="flex h-44 w-44 flex-col items-center justify-center rounded-full bg-background shadow-inner">
+              <div className="flex h-40 w-40 sm:h-44 sm:w-44 flex-col items-center justify-center rounded-full bg-background shadow-inner">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
                   Total
                 </span>

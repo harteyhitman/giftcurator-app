@@ -18,8 +18,8 @@ export default function QuickActions() {
         </Button>
       </Link>
       <div className="sm:hidden fixed bottom-6 right-6 z-50">
-        <Button size="icon" className="rounded-2xl h-16 w-16 bg-primary shadow-2xl shadow-primary/40 hover:scale-110 transition-all">
-          <Plus className="w-8 h-8" />
+        <Button size="icon" className="rounded-2xl h-14 w-14 sm:h-16 sm:w-16 bg-primary shadow-2xl shadow-primary/40 hover:scale-110 transition-all">
+          <Plus className="w-7 h-7 sm:w-8 sm:h-8" />
         </Button>
       </div>
     </div>

@@ -101,7 +101,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-8"
+            className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-8"
           >
             Curate Perfect Gifts <br className="hidden md:block" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary animate-gradient-x py-2">
@@ -122,9 +122,9 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full"
           >
-            <Button size="lg" className="w-full sm:w-64 h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-2xl shadow-primary/20 transition-all hover:scale-105 group" asChild>
+            <Button size="lg" className="w-full sm:w-64 h-14 sm:h-16 text-lg sm:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-2xl shadow-primary/20 transition-all hover:scale-105 group" asChild>
               <Link href="/signup">
                 Get Started Free
                 <motion.span
@@ -136,7 +136,7 @@ export default function LandingPage() {
                 </motion.span>
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-64 h-16 text-xl font-bold rounded-2xl backdrop-blur-md border-secondary/50 hover:bg-secondary/10 transition-all hover:scale-105" asChild>
+            <Button size="lg" variant="outline" className="w-full sm:w-64 h-14 sm:h-16 text-lg sm:text-xl font-bold rounded-2xl backdrop-blur-md border-secondary/50 hover:bg-secondary/10 transition-all hover:scale-105" asChild>
               <Link href="#features">
                 Watch Demo
               </Link>
@@ -235,8 +235,8 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="p-8 border rounded-lg bg-card">
-              <h3 className="text-2xl font-bold mb-4">😫 Without GiftCurator (The Pain)</h3>
+            <div className="p-6 sm:p-8 border rounded-lg bg-card">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4">😫 Without GiftCurator (The Pain)</h3>
               <ul className="space-y-4 text-muted-foreground">
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Forgetting important dates</li>
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Wondering what gift to buy</li>
@@ -244,8 +244,8 @@ export default function LandingPage() {
                 <li className="flex items-start"><span className="text-red-500 mr-2">&#10007;</span> Last-minute panic and stress</li>
               </ul>
             </div>
-            <div className="p-8 border rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20">
-              <h3 className="text-2xl font-bold mb-4">🎉 With GiftCurator (The Solution)</h3>
+            <div className="p-6 sm:p-8 border rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4">🎉 With GiftCurator (The Solution)</h3>
               <ul className="space-y-4 text-foreground">
                 <li className="flex items-start"><span className="text-green-500 mr-2">&#10003;</span> Automated reminders for every occasion</li>
                 <li className="flex items-start"><span className="text-green-500 mr-2">&#10003;</span> AI-powered, personalized suggestions</li>
@@ -413,9 +413,9 @@ export default function LandingPage() {
               Choose the plan that&apos;s right for you and start your free trial today.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 px-4 sm:px-0">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className={`p-8 border rounded-2xl bg-card h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col ${i === 1 ? 'border-secondary shadow-secondary/10 relative scale-105 z-10' : 'border-primary/10'}`}>
+              <div key={i} className={`p-8 border rounded-2xl bg-card h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col ${i === 1 ? 'border-secondary shadow-secondary/10 relative md:scale-105 z-10' : 'border-primary/10'}`}>
                 {i === 1 && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                     Most Popular
@@ -535,17 +535,17 @@ export default function LandingPage() {
         <div className="absolute top-0 left-0 w-64 h-64 bg-secondary/20 rounded-full blur-3xl -ml-32 -mt-32" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-secondary/20 rounded-full blur-3xl -mr-32 -mb-32" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight mb-6">Get Weekly Gift Ideas</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-xl opacity-90 mb-12">
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-6">Get Weekly Gift Ideas</h2>
+          <p className="mt-4 max-w-2xl mx-auto text-lg sm:text-xl opacity-90 mb-12">
             No spam, only gift inspiration. Join 5,000+ others getting curated ideas every week.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 max-w-lg mx-auto">
             <input 
               type="email" 
               placeholder="Enter your email" 
-              className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all" 
+              className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all text-lg" 
             />
-            <Button size="lg" className="w-full sm:w-auto px-8 h-14 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold rounded-2xl shadow-xl shadow-black/20 transition-all hover:scale-105">
+            <Button size="lg" className="w-full sm:w-auto px-8 h-14 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold rounded-2xl shadow-xl shadow-black/20 transition-all hover:scale-105 text-lg">
               Subscribe
             </Button>
           </div>

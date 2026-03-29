@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
@@ -43,6 +43,9 @@ export default function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetHeader className="mb-4">
+              <SheetTitle className="text-left">Navigation Menu</SheetTitle>
+            </SheetHeader>
             <div className="flex flex-col space-y-4">
               <Link href="#features" onClick={() => setIsOpen(false)}>Features</Link>
               <Link href="#pricing" onClick={() => setIsOpen(false)}>Pricing</Link>
@@ -50,13 +53,13 @@ export default function Navbar() {
             </div>
           </SheetContent>
         </Sheet>
-        <div className="flex flex-1 items-center justify-between space-x-4 md:justify-end">
-          <nav className="flex items-center space-x-4">
+        <div className="flex flex-1 items-center justify-end space-x-2 sm:space-x-4">
+          <nav className="flex items-center space-x-2 sm:space-x-4">
             <ThemeToggle />
-            <Button variant="ghost" className="hover:text-primary transition-colors" asChild>
+            <Button variant="ghost" className="hidden sm:flex hover:text-primary transition-colors h-9 px-3 sm:h-10 sm:px-4" asChild>
               <Link href="/login">Login</Link>
             </Button>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105" asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-9 px-4 sm:h-11 sm:px-6 rounded-xl shadow-lg shadow-primary/10 transition-all hover:scale-105 font-bold" asChild>
               <Link href="/signup">Sign Up</Link>
             </Button>
           </nav>

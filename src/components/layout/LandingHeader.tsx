@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 
 export default function LandingHeader() {
@@ -30,6 +30,9 @@ export default function LandingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetHeader className="mb-4">
+              <SheetTitle className="text-left">Navigation Menu</SheetTitle>
+            </SheetHeader>
             <div className="flex flex-col space-y-4">
               <Link href="#features" onClick={() => setIsOpen(false)}>Features</Link>
               <Link href="#pricing" onClick={() => setIsOpen(false)}>Pricing</Link>
@@ -37,12 +40,12 @@ export default function LandingHeader() {
             </div>
           </SheetContent>
         </Sheet>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <nav className="flex items-center">
-            <Button variant="ghost" asChild>
+        <div className="flex flex-1 items-center justify-end space-x-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
+            <Button variant="ghost" className="h-9 px-3 sm:h-10 sm:px-4 text-sm font-medium" asChild>
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild>
+            <Button className="h-9 px-3 sm:h-10 sm:px-4 text-sm font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105" asChild>
               <Link href="/signup">Sign Up</Link>
             </Button>
           </nav>
