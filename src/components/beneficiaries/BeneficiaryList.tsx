@@ -7,11 +7,10 @@ import useSWR from 'swr';
 import BeneficiaryCard from './BeneficiaryCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 export default function BeneficiaryList() {
-  const { data, error } = useSWR('/api/beneficiaries', fetcher);
+  const { data, error } = useSWR('/api/beneficiaries', looseJsonFetcher);
   const [searchTerm, setSearchTerm] = useState('');
   const [relationshipFilter, setRelationshipFilter] = useState('all');
   const [sort, setSort] = useState('recent');

@@ -2,6 +2,8 @@
 
 import { useEventFormStore } from '@/lib/store/event-form';
 import { useEffect, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { mutate as swrMutate } from 'swr';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { eventSchema } from '@/lib/schemas/event';
@@ -11,6 +13,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { EventStep1, EventStep2, EventStep3, EventStep4 } from './';
+
+async function parseApiError(response: Response, fallback: string): Promise<string> {
+  try {
+    const err = await response.json();
+    if (typeof err?.message === 'string') return err.message;
+  } catch {
+    /* ignore */
+  }
+  return fallback;
+}
 
 export default function EventForm() {
   const [step, setStep] = useState(1);
@@ -36,27 +48,38 @@ export default function EventForm() {
     return () => subscription.unsubscribe();
   }, [watch, setData]);
 
+  const createEvent = useMutation({
+    mutationFn: async (payload: z.infer<typeof eventSchema>) => {
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...payload,
+          date: payload.date instanceof Date ? payload.date.toISOString() : payload.date,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await parseApiError(response, 'Unable to create event'));
+      }
+
+      return response.json();
+    },
+    retry: false,
+    onSuccess: () => {
+      toast.success('Event created successfully');
+      void swrMutate('/api/events');
+      router.push('/events');
+      router.refresh();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
-
-  const onSubmit = async (data: z.infer<typeof eventSchema>) => {
-    const response = await fetch('/api/events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Unable to create event');
-    }
-
-    toast.success('Event created successfully');
-    router.push('/events');
-    router.refresh();
-  };
 
   return (
     <Card className="rounded-3xl border-primary/10 bg-card/80 shadow-xl shadow-primary/5">
@@ -70,21 +93,17 @@ export default function EventForm() {
       <CardContent className="p-6">
         <FormProvider {...form}>
           <form
-            onSubmit={form.handleSubmit(async (values) => {
-              try {
-                await onSubmit({
-                  ...values,
-                  date: values.date,
-                });
-              } catch (error: any) {
-                toast.error(error.message || 'Unable to save event');
-              }
+            onSubmit={form.handleSubmit((values) => {
+              createEvent.mutate({
+                ...values,
+                date: values.date,
+              });
             })}
           >
             {step === 1 && <EventStep1 nextStep={nextStep} />}
             {step === 2 && <EventStep2 nextStep={nextStep} prevStep={prevStep} />}
             {step === 3 && <EventStep3 nextStep={nextStep} prevStep={prevStep} />}
-            {step === 4 && <EventStep4 prevStep={prevStep} />}
+            {step === 4 && <EventStep4 prevStep={prevStep} isSubmitting={createEvent.isPending} />}
           </form>
         </FormProvider>
       </CardContent>

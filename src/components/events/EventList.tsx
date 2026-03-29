@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import useSWR from 'swr';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -12,15 +13,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetcher } from '@/lib/fetcher';
 
+type FetchError = Error & { status?: number; info?: { message?: string } };
+
+function eventsLoadMessage(error: unknown): string {
+  const err = error as FetchError;
+  if (err?.status === 401) {
+    return 'Not authorized to load events. Sign out and sign in again so your session includes an API token.';
+  }
+  if (err?.status === 503 && typeof err?.info?.message === 'string') {
+    return err.info.message;
+  }
+  if (typeof err?.info?.message === 'string') {
+    return err.info.message;
+  }
+  return 'Failed to load events. Check the API URL and that the backend is running.';
+}
+
 export default function EventList() {
   const { data: events, error } = useSWR('/api/events', fetcher);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  if (error) return (
-    <div className="p-8 text-center text-red-500 font-bold bg-red-50 rounded-2xl border border-red-100">
-      Failed to load events. Please try again later.
-    </div>
-  );
+  if (error) {
+    const err = error as FetchError;
+    return (
+      <div className="space-y-4 rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+        <p className="font-bold text-red-600">{eventsLoadMessage(error)}</p>
+        {err?.status === 401 ? (
+          <Link href="/login" className="inline-block text-sm font-semibold text-primary underline underline-offset-4">
+            Go to sign in
+          </Link>
+        ) : null}
+      </div>
+    );
+  }
 
   if (!events) return (
     <Card className="rounded-3xl border-primary/5 shadow-sm">

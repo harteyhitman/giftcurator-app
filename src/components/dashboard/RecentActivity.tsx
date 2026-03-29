@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Calendar, Gift, Package } from 'lucide-react';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 const getActivityIcon = (activity: string) => {
   if (activity.includes('beneficiary')) {
@@ -24,7 +24,7 @@ const getActivityIcon = (activity: string) => {
 };
 
 export default function RecentActivity() {
-  const { data, error } = useSWR('/api/dashboard/recent-activity', fetcher);
+  const { data, error } = useSWR('/api/dashboard/recent-activity', looseJsonFetcher);
 
   if (error) return <div className="text-muted-foreground text-sm">Failed to load</div>;
   if (!data) {

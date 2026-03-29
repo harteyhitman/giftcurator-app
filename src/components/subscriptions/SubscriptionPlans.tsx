@@ -7,13 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
+import { looseJsonFetcher } from '@/lib/fetcher';
 import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function SubscriptionPlans() {
   const [isAnnual, setIsAnnual] = useState(false);
-  const { data, error } = useSWR('/api/subscriptions', fetcher);
+  const { data, error } = useSWR('/api/subscriptions', looseJsonFetcher);
   const { trackEvent } = useAnalytics();
 
   if (error) return <div>Failed to load</div>;

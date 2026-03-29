@@ -4,10 +4,10 @@ import useSWR from 'swr';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 export default function CurrentSubscription() {
-  const { data, error } = useSWR('/api/subscriptions', fetcher);
+  const { data, error } = useSWR('/api/subscriptions', looseJsonFetcher);
 
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;

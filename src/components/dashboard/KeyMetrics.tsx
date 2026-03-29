@@ -4,11 +4,10 @@ import useSWR from 'swr';
 import StatCard from './StatCard';
 import { Calendar, Users, BarChart, Package } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 export default function KeyMetrics() {
-  const { data, error } = useSWR('/api/dashboard/metrics', fetcher);
+  const { data, error } = useSWR('/api/dashboard/metrics', looseJsonFetcher);
 
   if (error) return <div className="text-muted-foreground text-sm">Failed to load</div>;
   if (!data) {

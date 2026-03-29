@@ -2,6 +2,8 @@ import * as Sentry from "@sentry/nextjs";
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { warnIfAuthEnvIncomplete } = await import("@/lib/env");
+    warnIfAuthEnvIncomplete();
     await import("../sentry.server.config");
   }
 

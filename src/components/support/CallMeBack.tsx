@@ -53,6 +53,7 @@ export default function CallMeBack() {
 
       const response = await fetch('/api/support/callback', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

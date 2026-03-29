@@ -14,7 +14,7 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { apiFetch } from '@/lib/api';
+import { authApiFetch } from '@/lib/api';
 import {
   Form,
   FormControl,
@@ -42,7 +42,7 @@ export default function SignupForm() {
     try {
       setIsSubmitting(true);
 
-      await apiFetch('/auth/register', {
+      await authApiFetch('/auth/register', {
         method: 'POST',
         body: JSON.stringify({
           ...data,

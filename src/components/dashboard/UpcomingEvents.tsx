@@ -1,15 +1,14 @@
 'use client';
 
 import useSWR from 'swr';
+import { Skeleton } from '@/components/ui/skeleton';
+import { looseJsonFetcher } from '@/lib/fetcher';
 import EventCard, { type EventCardProps } from './EventCard';
 
 type UpcomingEventItem = EventCardProps & { id: string };
-import { Skeleton } from '@/components/ui/skeleton';
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function UpcomingEvents() {
-  const { data, error } = useSWR('/api/dashboard/upcoming-events', fetcher);
+  const { data, error } = useSWR('/api/dashboard/upcoming-events', looseJsonFetcher);
 
   if (error) return <div className="text-muted-foreground text-sm">Failed to load</div>;
   if (!data) {

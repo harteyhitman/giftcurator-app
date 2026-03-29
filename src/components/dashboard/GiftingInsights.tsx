@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 const COLORS = ['#6d28d9', '#d97706', '#4c1d95', '#fbbf24'];
 
 export default function GiftingInsights() {
-  const { data, error } = useSWR('/api/dashboard/insights', fetcher);
+  const { data, error } = useSWR('/api/dashboard/insights', looseJsonFetcher);
 
   if (error) return <div className="p-4 text-muted-foreground text-sm">Failed to load insights</div>;
   if (!data) return <Skeleton className="h-80 w-full rounded-3xl" />;

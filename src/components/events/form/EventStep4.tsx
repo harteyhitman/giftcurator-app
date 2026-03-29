@@ -8,7 +8,13 @@ import { format } from 'date-fns';
 
 import { fetcher } from '@/lib/fetcher';
 
-export default function EventStep4({ prevStep }: { prevStep: () => void }) {
+export default function EventStep4({
+  prevStep,
+  isSubmitting = false,
+}: {
+  prevStep: () => void;
+  isSubmitting?: boolean;
+}) {
   const { getValues } = useFormContext();
   const { data: beneficiaries } = useSWR('/api/beneficiaries', fetcher);
 
@@ -47,7 +53,9 @@ export default function EventStep4({ prevStep }: { prevStep: () => void }) {
       </Card>
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
         <Button variant="outline" onClick={prevStep}>Previous</Button>
-        <Button type="submit">Create Event</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating…' : 'Create Event'}
+        </Button>
       </div>
     </div>
   );

@@ -61,6 +61,7 @@ export default function SettingsPage() {
 
       const response = await fetch('/api/settings/profile', {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

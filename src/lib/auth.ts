@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import LinkedInProvider from 'next-auth/providers/linkedin';
 
-import { apiFetch, getApiBaseUrl } from '@/lib/api';
+import { authApiFetch, getAuthApiBaseUrl } from '@/lib/api';
 
 type AuthResponse = {
   access_token: string;
@@ -37,7 +37,8 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Email and password are required');
         }
 
-        const data = await apiFetch<AuthResponse>('/auth/login', {
+        // Uses NEXT_PUBLIC_API_URL (or BACKEND_API_URL) → …/api/auth/login
+        const data = await authApiFetch<AuthResponse>('/auth/login', {
           method: 'POST',
           body: JSON.stringify({
             email: credentials.email,
@@ -60,8 +61,9 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === 'linkedin') {
         throw new Error('LinkedIn sign-in is not wired to the API yet. Use email/password or Google.');
       }
+
       if (account?.provider === 'google' && account.id_token) {
-        const res = await fetch(`${getApiBaseUrl()}/auth/google`, {
+        const res = await fetch(`${getAuthApiBaseUrl()}/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken: account.id_token }),
@@ -72,20 +74,24 @@ export const authOptions: NextAuthOptions = {
           );
         }
         const data = (await res.json()) as AuthResponse;
+        token.accessToken = data.access_token;
         token.user = {
           id: data.user.id,
           email: data.user.email,
-          name: [data.user.firstName, data.user.lastName].filter(Boolean).join(' ') || profile?.name,
+          name:
+            [data.user.firstName, data.user.lastName].filter(Boolean).join(' ') || profile?.name,
           mobileNumber: data.user.mobileNumber ?? null,
-          accessToken: data.access_token,
         };
-      } else if (user && 'accessToken' in user && user.accessToken) {
+        return token;
+      }
+
+      if (user?.accessToken) {
+        token.accessToken = user.accessToken;
         token.user = {
           id: user.id,
           email: user.email ?? undefined,
           name: user.name,
           mobileNumber: user.mobileNumber ?? null,
-          accessToken: user.accessToken,
         };
       }
 
@@ -93,9 +99,15 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token.user) {
-        session.user = token.user as typeof session.user;
+        session.user = {
+          ...session.user,
+          ...token.user,
+          id: token.user.id,
+        };
       }
-
+      if (token.accessToken) {
+        session.user.accessToken = token.accessToken;
+      }
       return session;
     },
   },

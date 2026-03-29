@@ -21,6 +21,7 @@ export default function NotificationCenter() {
     trackEvent('mark_all_as_read', 'Notifications', 'Click');
     await fetch('/api/notifications/mark-all-as-read', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

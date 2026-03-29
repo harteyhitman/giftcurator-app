@@ -9,10 +9,10 @@ import {
   SpendingByBeneficiaryChart,
 } from './';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { looseJsonFetcher } from '@/lib/fetcher';
 
 export default function AnalyticsCards() {
-  const { data, error } = useSWR('/api/reports', fetcher);
+  const { data, error } = useSWR('/api/reports', looseJsonFetcher);
 
   if (error) return <div>Failed to load</div>;
   if (!data) {

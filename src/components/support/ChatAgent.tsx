@@ -19,6 +19,7 @@ export default function ChatAgent() {
 
     const response = await fetch('/api/support/chat', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: input }),
     });

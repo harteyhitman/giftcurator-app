@@ -4,7 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { CheckCircle2 } from 'lucide-react';
 
-export default function Step3({ prevStep }: { prevStep: () => void }) {
+export default function Step3({
+  prevStep,
+  isSubmitting = false,
+}: {
+  prevStep: () => void;
+  isSubmitting?: boolean;
+}) {
   const { getValues } = useFormContext();
   const values = getValues();
 
@@ -38,7 +44,9 @@ export default function Step3({ prevStep }: { prevStep: () => void }) {
       </Card>
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={prevStep} className="w-full mb-2 sm:w-auto sm:mb-0">Previous</Button>
-        <Button type="submit" className="w-full sm:w-auto">Save Beneficiary</Button>
+        <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving…' : 'Save Beneficiary'}
+        </Button>
       </div>
     </div>
   );
