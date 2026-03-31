@@ -97,15 +97,34 @@ export default function EventList() {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="calendar-container">
+          <div className="calendar-container min-h-[600px]">
             <style jsx global>{`
-              .fc { font-family: inherit; --fc-border-color: rgba(var(--primary), 0.05); --fc-button-bg-color: hsl(var(--primary)); --fc-button-border-color: hsl(var(--primary)); --fc-button-hover-bg-color: hsl(var(--primary) / 0.9); --fc-button-active-bg-color: hsl(var(--primary) / 0.8); }
-              .fc .fc-toolbar-title { font-weight: 900; font-size: 1.5rem; letter-spacing: -0.025em; }
-              .fc .fc-button { border-radius: 0.75rem; font-weight: 700; text-transform: capitalize; padding: 0.5rem 1rem; }
-              .fc .fc-daygrid-day.fc-day-today { background: rgba(var(--secondary), 0.05) !important; }
-              .fc .fc-event { border-radius: 0.5rem; padding: 2px 4px; font-weight: 600; background-color: hsl(var(--primary)); border: none; cursor: pointer; transition: transform 0.2s; }
+              .fc { 
+                font-family: inherit; 
+                --fc-border-color: oklch(0.9 0 0);
+                --fc-button-bg-color: var(--primary);
+                --fc-button-border-color: var(--primary);
+                --fc-button-hover-bg-color: var(--primary);
+                --fc-button-active-bg-color: var(--primary);
+                --fc-today-bg-color: oklch(0.75 0.15 85 / 0.1);
+              }
+              .fc .fc-toolbar-title { font-weight: 900; font-size: 1.25rem; letter-spacing: -0.025em; color: var(--foreground); }
+              .fc .fc-button { border-radius: 0.75rem; font-weight: 700; text-transform: capitalize; padding: 0.4rem 0.8rem; font-size: 0.875rem; transition: all 0.2s; }
+              .fc .fc-button-primary { background-color: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+              .fc .fc-button-primary:hover { background-color: var(--primary); opacity: 0.9; border-color: var(--primary); }
+              .fc .fc-button-primary:not(:disabled):active, .fc .fc-button-primary:not(:disabled).fc-button-active {
+                background-color: var(--secondary) !important;
+                border-color: var(--secondary) !important;
+                color: var(--secondary-foreground) !important;
+                box-shadow: 0 4px 12px rgba(var(--secondary), 0.2);
+              }
+              .fc .fc-daygrid-day.fc-day-today { background: oklch(0.75 0.15 85 / 0.05) !important; }
+              .fc .fc-event { border-radius: 0.5rem; padding: 2px 4px; font-weight: 600; background-color: var(--primary); border: none; cursor: pointer; transition: transform 0.2s; }
               .fc .fc-event:hover { transform: scale(1.02); }
               .fc .fc-daygrid-day-frame { padding: 4px; }
+              .fc .fc-col-header-cell-cushion { font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+              .fc .fc-daygrid-day-number { font-weight: 700; color: var(--foreground); font-size: 0.875rem; padding: 8px; }
+              .fc .fc-daygrid-event { white-space: normal; }
             `}</style>
             <FullCalendar
               plugins={[dayGridPlugin, interactionPlugin]}
@@ -119,8 +138,7 @@ export default function EventList() {
               eventClick={(info) => {
                 setSelectedEvent(info.event.extendedProps as any);
               }}
-              height="auto"
-              aspectRatio={1.8}
+              height="600px"
             />
           </div>
         </CardContent>

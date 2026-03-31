@@ -34,6 +34,7 @@
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
+  --color-placeholder: var(--placeholder);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
@@ -81,7 +82,8 @@
   --secondary-foreground: oklch(0.2 0 0);
   
   --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.45 0 0);
+  --muted-foreground: oklch(0.55 0 0);
+  --placeholder: oklch(0.7 0 0);
   
   /* Accent: Muted Gold/Purple Mix */
   --accent: oklch(0.9 0.05 85);
