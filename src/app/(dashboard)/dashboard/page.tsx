@@ -20,14 +20,14 @@ export default function DashboardPage() {
         <KeyMetrics />
       </section>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid  gap-8">
         <div className="lg:col-span-2 space-y-8">
           <section>
             <UpcomingEvents />
           </section>
         </div>
         
-        <div className="space-y-8">
+        <div className="space-y-8 flex gap-4 justify-between">
           <section className="bg-card rounded-3xl p-6 border border-primary/10 shadow-sm">
             <RecentActivity />
           </section>
